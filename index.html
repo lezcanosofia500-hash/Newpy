@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Eventos Históricos Del Paraguay</title>
+<style>
+    body {
+        background: url("https://i.postimg.cc/Pq0R2v2L/paraguay-flag-optimized.png") no-repeat center center fixed;
+        background-size: cover;
+        font-family: "Monserrat", sans-serif;
+        padding: 40px;
+        color: #222;
+    }
+    h1 {
+        text-align: center;
+        color: #e63b3b;
+    }
+    #contenedor {
+        max-width: 600px;
+        margin: auto;
+        background: rgba(228, 227, 227, 0.644);
+        padding: 20px;
+        border: 2px solid rgb(255,255,255, 0.3);
+        border-radius: 25px;
+        box-shadow: 0 4px 15xp rgb(0, 0, 0, 0, 2);
+        backdrop-filter: blur(5px);
+        transition: tranform 0.2s ease;
+    }
+    input {
+        width: 100%;
+        padding: 2px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+
+    button{
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        background: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: blackgruond 0.3s;
+    }
+
+    button:hover{
+        background: #c62828
+
+    }
+    .evento {
+        border-left: 5px solid #ec3131;
+        padding: 10px;
+        margin: 10px 0;
+        background: #eaf3f0;
+    }
+
+    .foto-evento{
+        width: 50%;
+        display: block;
+        margin: 0 auto;
+        max-width: 50%;
+        max-height: 250px;
+        object-fit: cover;
+        border-radius: 3xp;
+        margin-top: 3px;
+        box-shadow: 0 2xp 10xp rgb(0, 0, 0, 0, 2);
+        
+    }
+
+    .meta{
+        font-size: 14px;
+        color: #555;
+    }
+
+    .wiki{
+        border-left: 5px solid #0044aa;
+        padding: 10px;
+        margin: 10px 0;
+        background: #eef3ff;
+    }
+    
+</style>
+</head>
+<body>
+   
+
+<h1>¡Eventos Históricos Del Paraguay!</h1>
+
+<div id="contenedor">
+    <p>Ingresa Una Fecha (YYYY-MM-DD) O Un Año (YYYY):</p>
+    <input type="text" id="busqueda" placeholder="Ejemplo: 1811 o 1811-05-14">
+    <button onclick="buscar()">Buscar</button>
+    
+    <div id="resultados"></div>
+</div>
+
+<script>
+// =============================
+// BASE DE DATOS LOCAL
+// =============================
+const curiosidades = [
+  {fecha:"1537-08-15", evento:"Fundación de Asunción", detalle:"Juan de Salazar de Espinosa funda el fuerte de Nuestra Señora de la Asunción.",img:"https://i.postimg.cc/XqSNBX01/Juan-de-Salazar-de-Espinosa.jpg"},
+  {fecha:"1609-12-08",evento:"Creación de las reducciones jesuíticas",detalle:"San Ignacio Guazú es la primera reducción jesuítica en Paraguay.",img:"https://i.postimg.cc/wBx2PtVZ/reducciones-jesuitas.jpg"},
+  {fecha:"1767-02-27",evento:"Expulsión de los Jesuitas",detalle:"Carlos III decreta la expulsión de la Compañía de Jesús en América.", img:"https://i.postimg.cc/RVQcBSNz/expulcion.jpg"},
+  {fecha:"1811-05-14",evento:"Independencia de Paraguay",detalle:"Golpe liderado por Pedro Juan Caballero y Fulgencio Yegros logra la independencia.", img:"https://i.postimg.cc/wxDNXq5W/independencia.jpg"},
+  {fecha:"1814-10-03",evento:"Dictadura de Francia",detalle:"José Gaspar Rodríguez de Francia es nombrado Dictador Supremo.", img:"https://i.postimg.cc/LX3HsbfY/gaspar.avif"},
+  {fecha:"1844-03-13",evento:"Presidencia de Carlos Antonio López",detalle:"Inicia un proceso de modernización nacional con infraestructura y educación.", img:"https://i.postimg.cc/FsJBgJWG/carlos.jpg"},
+  {fecha:"1864-12-13",evento:"Inicio de la Guerra de la Triple Alianza",detalle:"Paraguay declara la guerra a Brasil, iniciando el conflicto regional.", img:"https://i.postimg.cc/pdrh85zj/guerra.jpg"},
+  {fecha:"1870-03-01",evento:"Muerte del Mariscal López",detalle:"Francisco Solano López muere en Cerro Corá, finalizando la guerra.", img:"https://i.postimg.cc/4y6mZ6Rk/mariscall.avif"},
+  {fecha:"1870-11-25",evento:"Constitución de 1870",detalle:"Se promulga una nueva constitución de corte liberal.", img:"https://i.postimg.cc/NFcjNK2K/constitucion.jpg"},
+  {fecha:"1932-09-09",evento:"Inicio de la Guerra del Chaco",detalle:"Paraguay entra en guerra con Bolivia por el Chaco Boreal.", img:"https://i.postimg.cc/J7x8w691/chaco.jpg"},
+  {fecha:"1954-05-04",evento:"Inicio de la dictadura de Stroessner",detalle:"Alfredo Stroessner toma el poder tras un golpe de Estado.", img:"https://i.postimg.cc/1z7WcFT0/alfredo.jpg"},
+  {fecha:"1989-02-03",evento:"Fin de la dictadura de Stroessner",detalle:"Golpe liderado por Andrés Rodríguez inicia la transición democrática.", img:"https://i.postimg.cc/xjvv9HRt/findeladic.avif"},
+  {fecha:"1992-06-20",evento:"Constitución de 1992",detalle:"Se promulga una nueva constitución que prohíbe la reelección presidencial.", img:"https://i.postimg.cc/vBL4w7s8/1992.webp"},
+  {fecha:"2008-08-15",evento:"Fernando Lugo asume la presidencia",detalle:"Primer presidente no colorado en más de 60 años.", img:"https://i.postimg.cc/8Pbxf71z/fernado.avif"},
+  {fecha:"2012-06-22",evento:"Juicio político a Fernando Lugo",detalle:"El Congreso destituye a Lugo en un proceso controvertido.", img:"https://i.postimg.cc/BZTVRjPz/11.jpg"},
+  {fecha:"2013-04-21",evento:"Elección de Horacio Cartes",detalle:"El Partido Colorado regresa al poder tras cinco años de interregno.", img:"https://i.postimg.cc/8Pkt3tSk/oracio.jpg"},
+  {fecha:"2020-03-10",evento:"Primer caso de COVID-19 en Paraguay",detalle:"Se confirma el primer caso y se implementan medidas sanitarias.", img:"https://i.postimg.cc/V6cFFFg8/covid.avif"}
+];
+
+// =============================
+// FUNCIONES
+// =============================
+function curiosidad_por_fecha(fecha) {
+    return curiosidades.filter(c => c.fecha.startsWith(fecha));
+}
+
+async function buscar_wikipedia(termino) {
+    const url = `https://es.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(termino + " Paraguay")}&format=json&origin=*&utf8=1&srlimit=3`;
+
+    try {
+        const resp = await fetch(url);
+        const data = await resp.json();
+        return data?.query?.search || [];
+    } catch {
+        return [];
+    }
+}
+
+async function buscar() {
+    const valor = document.getElementById("busqueda").value.trim();
+    const cont = document.getElementById("resultados");
+    cont.innerHTML = "";
+
+    if (!valor) return;
+
+    // Buscar en base local
+    const encontrados = curiosidad_por_fecha(valor);
+
+    if (encontrados.length > 0) {
+        encontrados.forEach(e => {
+            cont.innerHTML += `
+                <div class="evento">
+                    <h3>${e.fecha} — ${e.evento}</h3>
+                    <p>${e.detalle}</p>
+
+                    ${e.img? `<img src="${e.img}" class="foto-evento">`:""}
+                </div>
+            `;
+        });
+    } else {
+        cont.innerHTML = `<p>No se encontraron eventos locales. Buscando en Wikipedia...</p>`;
+
+        const wiki = await buscar_wikipedia(valor);
+
+        if (wiki.length > 0) {
+            wiki.forEach(r => {
+                cont.innerHTML += `
+                    <div class="wiki">
+                        <h3>${r.title}</h3>
+                        <p>${r.snippet}...</p>
+                    </div>
+                `;
+            });
+        } else {
+            cont.innerHTML += `<p>No se encontraron resultados en Wikipedia.</p>`;
+        }
+    }
+}
+</script>
+
+</body>
+</html>
