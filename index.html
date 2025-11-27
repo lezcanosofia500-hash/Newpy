@@ -80,26 +80,12 @@
         margin: 10px 0;
         background: #eef3ff;
     }
-
-     .evento, .wiki {
-        animation: aparecer 0.4s ease;
-    }
-
-    @keyframes aparecer {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
     
 </style>
 </head>
 <body>
    
+
 <h1>¡Eventos Históricos Del Paraguay!</h1>
 
 <div id="contenedor">
@@ -139,13 +125,6 @@ const curiosidades = [
 // =============================
 function curiosidad_por_fecha(fecha) {
     return curiosidades.filter(c => c.fecha.startsWith(fecha));
-}
-
-funcion buscar_por_palabra(palabra) {
-    return curiosidades.filter(item =>
-        item.evento.toLowerCase().includes(palabra.toLowerCase()) ||
-        item.dellate.toLoweCase().includes(palabra.toLowerCase())
-        );
 }
 
 async function buscar_wikipedia(termino) {
@@ -204,8 +183,3 @@ async function buscar() {
 
 </body>
 </html>
-
-
-
-
-
