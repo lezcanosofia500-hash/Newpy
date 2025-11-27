@@ -127,6 +127,13 @@ function curiosidad_por_fecha(fecha) {
     return curiosidades.filter(c => c.fecha.startsWith(fecha));
 }
 
+function buscar_por_palabra(palabra) {
+    return curiosidades.filter(item =>
+        item.evento.toLowerCase().includes(palabra.toLowerCase()) ||
+        item.detalle.toLowerCase().includes(palabra.toLowerCase())
+    );
+}
+
 async function buscar_wikipedia(termino) {
     const url = `https://es.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(termino + " Paraguay")}&format=json&origin=*&utf8=1&srlimit=3`;
 
@@ -183,3 +190,4 @@ async function buscar() {
 
 </body>
 </html>
+
